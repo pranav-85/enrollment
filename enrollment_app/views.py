@@ -1,11 +1,23 @@
 from django.shortcuts import render
 from django.contrib import messages
 from .models import Student, Advisor, Admin
+from datetime import datetime
 import MySQLdb
 
 def home(request):
     return render(request, 'login.html')
 
+def CurrentSem():
+    current_sem = ''
+    year = datetime.now().year
+    month = datetime.now().month
+    if month == 12:
+        year+=1
+        current_sem += 'JAN-MAY ' + str(year)
+    else:
+        current_sem += 'JUL-NOV ' + str(year)
+    
+    return current_sem
 def login(request):
     if request.method == 'POST':
         try:
@@ -25,6 +37,7 @@ def login(request):
             user = cursor.fetchone()
 
             if user and user[1] == password:
+
                 query_student = "SELECT * FROM student WHERE student_id = %s;"
                 cursor.execute(query_student, (user_id,))
                 student_data = cursor.fetchone()
@@ -41,7 +54,7 @@ def login(request):
                     student = Student()
                     student.RollNumber=user_id
                     student.Name=student_data[1]
-                    student.CurrentSemester=5
+                    student.CurrentSemester= CurrentSem()
                     student.RegStatus='File not submitted'
                     
                     return render(request, 'enroll.html', {'student': student})
@@ -66,3 +79,5 @@ def login(request):
             db.close()
 
     return render(request, 'login.html')
+
+
