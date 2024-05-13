@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f0f0f0;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .approve-button, .deny-button {
+      padding: 5px 10px;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+
+    .approve-button {
+      background-color: #28a745;
+      color: #fff;
+    }
+
+    .deny-button {
+      background-color: #dc3545;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <h1>Admin Dashboard</h1>
+  <div class="container">
+    <p>Admin ID: {{admin.Admin_ID}}</p>
+    <p>Name: {{admin.Name}}</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Student Name</th>
+          <th>Roll Number</th>
+          <th>PDF Uploaded</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Alice</td>
+          <td>101</td>
+          <td>document1.pdf</td>
+          <td class="action-buttons">
+            <button class="approve-button">Approve</button>
+            <button class="deny-button">Deny</button>
+          </td>
+        </tr>
+        <tr>
+          <td>Bob</td>
+          <td>102</td>
+          <td>document2.pdf</td>
+          <td class="action-buttons">
+            <button class="approve-button">Approve</button>
+            <button class="deny-button">Deny</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Students Yet to Submit Documents</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Student Name</th>
+          <th>Roll Number</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Charlie</td>
+          <td>103</td>
+        </tr>
+        <tr>
+          <td>Diana</td>
+          <td>104</td>
+        </tr>
+        
+      </tbody>
+    </table>
+
+    <h2>Students Yet to be approved by Faculty Advisor</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Student Name</th>
+          <th>Roll Number</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Charlie</td>
+          <td>103</td>
+        </tr>
+        <tr>
+          <td>Diana</td>
+          <td>104</td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>
