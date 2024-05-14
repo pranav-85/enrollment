@@ -15,3 +15,8 @@ class Advisor():
 class Admin():
     Admin_ID : str
     Name : str
+
+class StudentDoc():
+    Name : str
+    ID : str
+    Document : str

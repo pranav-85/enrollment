@@ -1,11 +1,16 @@
 from django.shortcuts import render
 from django.contrib import messages
-from .models import Student, Advisor, Admin
+from .models import Student, Advisor, Admin, StudentDoc
 from datetime import datetime
+import os
 import MySQLdb
 
 def home(request):
     return render(request, 'login.html')
+
+def save_blob_as_pdf(blob_data, output_file_path):
+    with open(output_file_path, 'wb') as file:
+        file.write(blob_data)
 
 def CurrentSem():
     current_sem = ''
@@ -58,12 +63,40 @@ def login(request):
                     student.RegStatus='File not submitted'
                     
                     return render(request, 'enroll.html', {'student': student})
+                
                 elif advisor_data:
                     advisor = Advisor()
                     advisor.Advisor_ID=user_id
                     advisor.Name=advisor_data[1]
                     
-                    return render(request, 'adv.html', {'advisor': advisor})
+                    student_adv_query = f"SELECT D.document, S.name, S.student_id FROM student S, document D, Enrollment E WHERE S.advisor_id = '{user_id}' AND S.student_id = D.student_ID AND D.advisor_ID = '{user_id}' AND D.semester = '{CurrentSem()}' AND E.Student_ID = S.student_ID AND E.status = 'Yet to be Approved';"
+                    cursor.execute(student_adv_query)
+                    studentDoc_data = cursor.fetchall()
+                    student_submitted = []
+                    
+                    for i, data in enumerate(studentDoc_data):
+                        studentDoc = StudentDoc()
+                        studentDoc.Name = data[i][1]
+                        studentDoc.ID = data[i][2]
+                        save_blob_as_pdf(bytes(data[i][0]), f'C:/Users/msaip/project/enrollment/files/{data[i][1]}.pdf')
+                        studentDoc.Document = f'{data[i][1]}.pdf'
+                        student_submitted.append(studentDoc)
+
+                    student_adv_query = f"SELECT D.document, S.name, S.student_id FROM student S, document D, Enrollment E WHERE S.advisor_id = '{user_id}' AND S.student_id = D.student_ID AND D.advisor_ID = '{user_id}' AND D.semester = '{CurrentSem()}' AND E.Student_ID = S.student_ID AND E.status = 'Approved';"
+                    cursor.execute(student_adv_query)
+                    studentDoc_data = cursor.fetchall()
+                    student_approved = []
+
+                    for data,i in enumerate(studentDoc_data):
+                        studentDoc = StudentDoc()
+                        studentDoc.Name = data[i][1]
+                        studentDoc.ID = data[i][2]
+                        save_blob_as_pdf(bytes(data[i][0]), f'C:/Users/msaip/project/enrollment/files/{data[i][1]}.pdf')
+                        studentDoc.Document = f'{data[i][1]}.pdf'
+                        student_approved.append(studentDoc)
+
+                    return render(request, 'adv.html', {'advisor': advisor, 'student_submitted': student_submitted, 'student_approved' : student_approved})
+                
                 elif admin_data:
                     admin = Admin()
                     admin.Admin_ID=user_id
