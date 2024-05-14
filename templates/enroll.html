@@ -63,18 +63,32 @@
   <div class="container">
     <h2>Document Upload</h2>
     <div id="userDetails">
+        {% csrf_token %}
       <p><strong>Name:</strong> <span id="namePlaceholder">{{student.Name}}</span></p>
-      <p><strong>Roll Number:</strong> <span id="rollNumberPlaceholder">{{student.RollNumber}}</span></p>
+      <p ><strong>Roll Number:</strong> <span id="rollNumberPlaceholder">{{student.RollNumber}}</span></p>
       <p><strong>Current Semester:</strong> <span id="semesterPlaceholder">{{student.CurrentSemester}}</span></p>
       <p><strong>Registration Status:</strong> <span id="regStatusPlaceholder">{{student.RegStatus}}</span></p>
     </div>
-    <form action="#" method="post" enctype="multipart/form-data">
+    <form id="documentForm" action="enroll" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+    <input type="hidden" id="user_id" name="user_id" value="{{ student.RollNumber }}">
       <label for="pdf_file">Upload PDF:</label>
-      <input type="file" id="pdf_file" name="pdf_file" accept=".pdf" required>
+      <input type="file" id="pdf_file" name="pdf_file" accept=".pdf" {% if student.RegStatus == 'File not submitted' %}required{% endif %} {% if student.RegStatus != 'File not submitted' %}disabled{% endif %}>
 
       <input type="submit" value="Submit">
     </form>
   </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', function() {
+      var regStatus = document.getElementById('regStatusPlaceholder').textContent;
+      var fileInput = document.getElementById('pdf_file');
+      
+      if (regStatus !== 'File not submitted') {
+        fileInput.disabled = true;
+      }
+    });
+  </script>
 
 </body>
 </html>

@@ -81,3 +81,44 @@ def login(request):
     return render(request, 'login.html')
 
 
+
+def enroll(request):
+    student = Student()
+    if request.method == 'POST':
+        try:
+            db = MySQLdb.connect(
+                host="localhost",
+                user='root',
+                password='Pr@navmysql',
+                database='Enrollment'
+            )
+            cursor = db.cursor()
+            user_id = request.POST.get("user_id")
+            file = request.FILES.get("pdf_file")
+
+            if file:
+                file_content = file.read()
+                
+                query_student = f"SELECT * FROM student WHERE student_id = '{user_id}';"
+                cursor.execute(query_student)
+                student_data = cursor.fetchone()
+
+                query_insert = "INSERT INTO Document(document, status, semester, Comments, Student_ID, Advisor_ID, Admin_ID) VALUES (%s, 'File Submitted', %s, '', %s, %s, %s);"
+                cursor.execute(query_insert, (file_content, CurrentSem(), user_id, student_data[3], student_data[4]))
+                db.commit()
+
+                query_insert_enrollment = "INSERT INTO Enrollment(semester, Status, Comments, Student_ID) VALUES (%s,'Yet to be Approved', '', %s);"
+                cursor.execute(query_insert_enrollment, (CurrentSem(),user_id,))
+                db.commit()
+
+            student.RollNumber = user_id
+            student.Name = student_data[1]
+            student.CurrentSemester = CurrentSem()
+            student.RegStatus = 'File Submitted, Yet to be Approved'
+        except MySQLdb.Error as e:
+            messages.error(request, f'MySQL Error: {e}')
+        finally:
+            cursor.close()
+            db.close()
+
+    return render(request, 'enroll.html', {'student': student})
