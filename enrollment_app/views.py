@@ -18,7 +18,7 @@ def redirect_to_media(request, path):
 def save_blob_as_pdf(blob_data, output_file_path):
     with open(output_file_path, 'wb') as file:
         file.write(blob_data)
-        
+
 def LoadAdvisorData(user_id):
     db = MySQLdb.connect(
                 host="localhost",
@@ -57,7 +57,7 @@ def LoadAdvisorData(user_id):
         studentDoc.Document = f'{data[2]}.pdf'
         student_approved.append(studentDoc)
 
-    student_adv_query = f"SELECT S.name, S.student_id FROM Student S, document D WHERE S.advisor_id = '{user_id}' AND S.student_id NOT IN (SELECT D.student_ID FROM Document D WHERE D.semester = '{CurrentSem()}' AND D.advisor_ID = '{user_id}');"
+    student_adv_query = f"SELECT DISTINCT S.name, S.student_id FROM Student S, document D WHERE S.advisor_id = '{user_id}' AND S.student_id NOT IN (SELECT D.student_ID FROM Document D WHERE D.semester = '{CurrentSem()}' AND D.advisor_ID = '{user_id}');"
     cursor.execute(student_adv_query)
     studentDoc_data = cursor.fetchall()
     student_no_doc = []
@@ -287,7 +287,11 @@ def advisor_approve(request):
             cursor.execute(update_query)
             db.commit()
 
-            data = LoadAdvisorData(advisor_id)
+            query_insert_verification = "INSERT INTO Verification(semester, Status, Comments, Student_ID) VALUES (%s,'Yet to be Approved', '', %s);"
+            cursor.execute(query_insert_verification, (CurrentSem(),student_id,))
+            db.commit()
+
+            
             return redirect(reverse('advisor_dashboard') + f'?user_id={advisor_id}')  
             
         except MySQLdb.Error as e:
@@ -300,4 +304,37 @@ def advisor_approve(request):
     
         
 
+def advisor_deny(request):
+    if request.method == 'POST':
+        try:
+            db = MySQLdb.connect(
+                host="localhost",
+                user='root',
+                password='Pr@navmysql',
+                database='Enrollment'
+            )
+            cursor = db.cursor()
+            student_id = request.POST.get("student_id")
+            advisor_id = request.POST.get("advisor_id")
+
+            query_advisor = "SELECT * FROM advisor WHERE advisor_id = %s;"
+            cursor.execute(query_advisor, (advisor_id,))
+            advisor_data = cursor.fetchone()
+
+            advisor = Advisor()
+            advisor.Advisor_ID=advisor_id
+            advisor.Name=advisor_data[1]
+            
+            delete_query = f"DELETE FROM Document WHERE student_ID = '{student_id}' AND semester = '{CurrentSem()}';"
+            cursor.execute(delete_query)
+            db.commit()
+
+            return redirect(reverse('advisor_dashboard') + f'?user_id={advisor_id}')  
+            
+        except MySQLdb.Error as e:
+            messages.error(request, f'MySQL Error: {e}')
+        finally:
+            cursor.close()
+            db.close()
     
+    return redirect('login')
