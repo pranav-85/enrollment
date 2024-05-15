@@ -63,9 +63,25 @@
       background-color: #dc3545;
       color: #fff;
     }
+
+    .logout-button {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
+  <form action="{% url 'logout' %}" method="post">
+    {% csrf_token %}
+    <button class="logout-button">Logout</button>
+  </form>
   <h1>Faculty Dashboard</h1>
   <div class="container">
     <p>Faculty Advisor ID: {{advisor.Advisor_ID}}</p>

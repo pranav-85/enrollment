@@ -56,14 +56,30 @@
     input[type="submit"]:hover {
       background-color: #0056b3;
     }
+
+    .logout-button {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
 
   <div class="container">
-    <h2>Document Upload</h2>
+    <form action="{% url 'logout' %}" method="post">
+      {% csrf_token %}
+      <button class="logout-button">Logout</button>
+    </form>
+    <h2>Student Dashboard</h2>
     <div id="userDetails">
-        {% csrf_token %}
+      {% csrf_token %}
       <p><strong>Name:</strong> <span id="namePlaceholder">{{student.Name}}</span></p>
       <p ><strong>Roll Number:</strong> <span id="rollNumberPlaceholder">{{student.RollNumber}}</span></p>
       <p><strong>Current Semester:</strong> <span id="semesterPlaceholder">{{student.CurrentSemester}}</span></p>
@@ -71,7 +87,7 @@
     </div>
     <form id="documentForm" action="{% url 'enroll' %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-    <input type="hidden" id="user_id" name="user_id" value="{{ student.RollNumber }}">
+        <input type="hidden" id="user_id" name="user_id" value="{{ student.RollNumber }}">
       <label for="pdf_file">Upload PDF:</label>
       <input type="file" id="pdf_file" name="pdf_file" accept=".pdf" {% if student.RegStatus == 'File not submitted' %}required{% endif %} {% if student.RegStatus != 'File not submitted' %}disabled{% endif %}>
 
@@ -84,8 +100,10 @@
       var regStatus = document.getElementById('regStatusPlaceholder').textContent;
       var fileInput = document.getElementById('pdf_file');
       
-      if (regStatus !== 'File not submitted') {
-        fileInput.disabled = true;
+      fileInput.disabled = true;
+
+      if (regStatus === 'File not Submitted') {
+        fileInput.disabled = false;
       }
     });
   </script>
