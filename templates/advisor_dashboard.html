@@ -84,7 +84,7 @@
         <tr>
             <td>{{student.Name}}</td>
             <td>{{student.ID}}</td>
-            <td><a href="{% url 'advisor_dashboard' %}/uploads/{{ student.Document }}">View</a></td>
+            <td><a href="{{student.Document}}">View</a></td>
             <td class="action-buttons">
                 <form method="POST" action="{% url 'advisor_approve' %}" style="display: inline;">
                     {% csrf_token %}

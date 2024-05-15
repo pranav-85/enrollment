@@ -69,7 +69,7 @@
       <p><strong>Current Semester:</strong> <span id="semesterPlaceholder">{{student.CurrentSemester}}</span></p>
       <p><strong>Registration Status:</strong> <span id="regStatusPlaceholder">{{student.RegStatus}}</span></p>
     </div>
-    <form id="documentForm" action="enroll" method="post" enctype="multipart/form-data">
+    <form id="documentForm" action="{% url 'enroll' %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
     <input type="hidden" id="user_id" name="user_id" value="{{ student.RollNumber }}">
       <label for="pdf_file">Upload PDF:</label>

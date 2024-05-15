@@ -82,7 +82,7 @@ def CurrentSem():
     return current_sem
 
 def student_dashboard(request):
-    if request.method == 'POST':
+    if request.method == 'GET':
         try:
             db = MySQLdb.connect(
                 host="localhost",
@@ -102,7 +102,7 @@ def student_dashboard(request):
             student.CurrentSemester= CurrentSem()
             student.RegStatus='File not submitted'
                 
-            return render(request, 'enroll.html', {'student': student})
+            return render(request, 'student_dashboard.html', {'student': student})
         except MySQLdb.Error as e:
             messages.error(request, f'MySQL Error: {e}')
         finally:
@@ -251,13 +251,15 @@ def enroll(request):
                 student.Name = student_data[1]
                 student.CurrentSemester = CurrentSem()
                 student.RegStatus = 'File Submitted, Yet to be Approved'
+                
+                return redirect(reverse('student_dashboard') + f'?user_id={user_id}')
         except MySQLdb.Error as e:
             messages.error(request, f'MySQL Error: {e}')
         finally:
             cursor.close()
             db.close()
 
-    return render(request, 'enroll.html', {'student': student})
+    return render(request, 'student_dashboard.html', {'student': student})
 
 
 def advisor_approve(request):
