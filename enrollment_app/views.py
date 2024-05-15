@@ -7,8 +7,13 @@ from django.urls import reverse
 from django.contrib.auth import logout
 from django.conf import settings
 from .models import Student, Advisor, Admin, StudentDoc
-from datetime import datetime
+from datetime import datetime, date
 import MySQLdb
+
+def today_date():
+    today = date.today()
+    formatted_date = today.strftime("%Y-%m-%d")
+    return formatted_date
 
 def logout_view(request):
     logout(request)
@@ -197,8 +202,32 @@ def student_dashboard(request):
             student.Name=student_data[1]
             student.CurrentSemester= CurrentSem()
             student.RegStatus=StudentStatus(user_id)
-                
-            return render(request, 'student_dashboard.html', {'student': student})
+            
+            notification_query = f"SELECT message, sender_ID FROM Notification WHERE student_ID = '{user_id}' AND read_status='Unread';"
+            cursor.execute(notification_query)
+            message_data = cursor.fetchone()
+
+            sender = ''
+            message = ''
+
+            if message_data:
+                sender_query = f"SELECT name FROM advisor WHERE advisor_id = '{message_data[1]}';"
+                cursor.execute(sender_query)
+                sender_data = cursor.fetchone()
+
+            
+                if not sender_data:
+                    sender_query = f"SELECT name FROM admin WHERE admin_id = '{message_data[1]}';"
+                    cursor.execute(sender_query)
+                    sender_data = cursor.fetchone()
+
+                if sender_data:
+                    sender = sender_data[0]
+            
+                message = message_data[0]
+
+
+            return render(request, 'student_dashboard.html', {'student': student, 'message': message, 'sender' : sender})
         except MySQLdb.Error as e:
             messages.error(request, f'MySQL Error: {e}')
         finally:
@@ -349,6 +378,10 @@ def enroll(request):
                 cursor.execute(query_insert_enrollment, (CurrentSem(),user_id,))
                 db.commit()
 
+                notification_query = f"UPDATE Notification SET read_status = 'Read' WHERE read_status='Unread' AND student_ID = '{user_id}';"
+                cursor.execute(notification_query)
+                db.commit()
+
                 student.RollNumber = user_id
                 student.Name = student_data[1]
                 student.CurrentSemester = CurrentSem()
@@ -418,6 +451,7 @@ def advisor_deny(request):
             cursor = db.cursor()
             student_id = request.POST.get("student_id")
             advisor_id = request.POST.get("advisor_id")
+            denial_reason = request.POST.get("denial_reason")
 
             query_advisor = "SELECT * FROM advisor WHERE advisor_id = %s;"
             cursor.execute(query_advisor, (advisor_id,))
@@ -435,6 +469,9 @@ def advisor_deny(request):
             cursor.execute(delete_query)
             db.commit()
 
+            add_notification_query = f"INSERT INTO notification (student_ID, sender_ID, date_sent, message, read_status) VALUES ('{student_id}', '{advisor_id}', '{today_date()}', '{denial_reason}', 'Unread');"
+            cursor.execute(add_notification_query)
+            db.commit()
             return redirect(reverse('advisor_dashboard') + f'?user_id={advisor_id}')  
             
         except MySQLdb.Error as e:
@@ -497,6 +534,7 @@ def admin_deny(request):
             cursor = db.cursor()
             student_id = request.POST.get("student_id")
             admin_id = request.POST.get("admin_id")
+            denial_reason = request.POST.get("denial_reason")
 
             query_admin = "SELECT * FROM admin WHERE admin_id = %s;"
             cursor.execute(query_admin, (admin_id,))
@@ -516,6 +554,10 @@ def admin_deny(request):
 
             delete_query = f"DELETE FROM Document WHERE student_ID = '{student_id}' AND semester = '{CurrentSem()}';"
             cursor.execute(delete_query)
+            db.commit()
+
+            add_notification_query = f"INSERT INTO notification (student_ID, sender_ID, date_sent, message, read_status) VALUES ('{student_id}', '{admin_id}', '{today_date()}', '{denial_reason}', 'Unread');"
+            cursor.execute(add_notification_query)
             db.commit()
 
             return redirect(reverse('admin_dashboard') + f'?user_id={admin_id}')  
