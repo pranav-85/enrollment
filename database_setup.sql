@@ -66,3 +66,15 @@ CREATE TABLE verification (
     Student_ID VARCHAR(50),
     FOREIGN KEY (Student_ID) REFERENCES student(student_id)
 );
+
+
+CREATE TABLE Notification (
+    Notification_ID INT AUTO_INCREMENT PRIMARY KEY,
+    student_ID VARCHAR(50),
+    sender_ID VARCHAR(50),
+    date_sent DATE,
+    message VARCHAR(200),
+    read_status VARCHAR(100),
+    FOREIGN KEY (student_ID) REFERENCES student(student_id)
+);
+
