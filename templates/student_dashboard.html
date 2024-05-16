@@ -115,12 +115,18 @@
     window.addEventListener('DOMContentLoaded', function() {
       var regStatus = document.getElementById('regStatusPlaceholder').textContent;
       var fileInput = document.getElementById('pdf_file');
+      var submitButton = document.querySelector('input[type="submit"]');
       
       fileInput.disabled = true;
+      submitButton.style.display = 'none';
 
       if (regStatus === 'File not Submitted') {
         fileInput.disabled = false;
       }
+
+      fileInput.addEventListener('change', function() {
+        submitButton.style.display = this.disabled ? 'none' : 'block'; 
+      });
     });
   </script>
 
