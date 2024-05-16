@@ -1,154 +1,164 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Faculty Dashboard</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 20px;
-      background-color: #f0f0f0;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Faculty Dashboard</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f0f0f0;
+      }
 
-    h1 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
+      h1 {
+        text-align: center;
+        margin-bottom: 20px;
+      }
 
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      background-color: #fff;
-      padding: 20px;
-      border-radius: 5px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
 
-    th, td {
-      padding: 10px;
-      border-bottom: 1px solid #ddd;
-      text-align: left;
-    }
+      th,
+      td {
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+        text-align: left;
+      }
 
-    th {
-      background-color: #f2f2f2;
-    }
+      th {
+        background-color: #f2f2f2;
+      }
 
-    .action-buttons {
-      display: flex;
-      gap: 10px;
-    }
+      .action-buttons {
+        display: flex;
+        gap: 10px;
+      }
 
-    .approve-button, .deny-button {
-      padding: 5px 10px;
-      border: none;
-      border-radius: 3px;
-      cursor: pointer;
-    }
+      .approve-button,
+      .deny-button {
+        padding: 5px 10px;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+      }
 
-    .approve-button {
-      background-color: #28a745;
-      color: #fff;
-    }
+      .approve-button {
+        background-color: #28a745;
+        color: #fff;
+      }
 
-    .deny-button {
-      background-color: #dc3545;
-      color: #fff;
-    }
+      .deny-button {
+        background-color: #dc3545;
+        color: #fff;
+      }
 
-    .logout-button {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      padding: 10px 20px;
-      background-color: #007bff;
-      color: #fff;
-      border: none;
-      border-radius: 3px;
-      cursor: pointer;
-    }
+      .logout-button {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+      }
 
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(0,0,0,0.4);
-    }
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+      }
 
-    .modal-content {
-      background-color: #fefefe;
-      margin: 15% auto;
-      padding: 20px;
-      border: 1px solid #888;
-      border-radius: 5px;
-      width: 80%;
-    }
+      .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        border-radius: 5px;
+        width: 80%;
+      }
 
-    .close {
-      color: #aaa;
-      float: right;
-      font-size: 28px;
-      font-weight: bold;
-    }
+      .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+      }
 
-    .close:hover,
-    .close:focus {
-      color: black;
-      text-decoration: none;
-      cursor: pointer;
-    }
-
-
-  </style>
-</head>
-<body>
-  <form action="{% url 'logout' %}" method="post">
-    {% csrf_token %}
-    <button class="logout-button">Logout</button>
-  </form>
-  <h1>Faculty Dashboard</h1>
-  <div class="container">
-    <p>Faculty Advisor ID: {{advisor.Advisor_ID}}</p>
-    <p>Faculty Name: {{advisor.Name}}</p>
-    <table>
-      <thead>
-        <tr>
-          <th>Student Name</th>
-          <th>Roll Number</th>
-          <th>PDF Uploaded</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for student in student_submitted%}
-        <tr>
+      .close:hover,
+      .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <form action="{% url 'logout' %}" method="post">
+      {% csrf_token %}
+      <button class="logout-button">Logout</button>
+    </form>
+    <h1>Faculty Dashboard</h1>
+    <div class="container">
+      <p>Faculty Advisor ID: {{advisor.Advisor_ID}}</p>
+      <p>Faculty Name: {{advisor.Name}}</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Student Name</th>
+            <th>Roll Number</th>
+            <th>PDF Uploaded</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for student in student_submitted%}
+          <tr>
             <td>{{student.Name}}</td>
             <td>{{student.ID}}</td>
             <td><a href="{{student.Document}}">View</a></td>
             <td class="action-buttons">
-                <form method="POST" action="{% url 'advisor_approve' %}" style="display: inline;">
-                    {% csrf_token %}
-                    <input type="hidden"  name="advisor_id" value="{{ advisor.Advisor_ID }}">
-                    <input type="hidden"  name="student_id" value="{{ student.ID }}">
-                    <button type="submit" class="approve-button">Approve</button>
-                </form>
-                
-                    
-                <button type="submit" class="deny-button">Deny</button>
-                
+              <form
+                method="POST"
+                action="{% url 'advisor_approve' %}"
+                style="display: inline"
+              >
+                {% csrf_token %}
+                <input
+                  type="hidden"
+                  name="advisor_id"
+                  value="{{ advisor.Advisor_ID }}"
+                />
+                <input
+                  type="hidden"
+                  name="student_id"
+                  value="{{ student.ID }}"
+                />
+                <button type="submit" class="approve-button">Approve</button>
+              </form>
+
+              <button type="submit" class="deny-button">Deny</button>
             </td>
             <td>
               <div id="myModal_{{ student.ID }}" class="modal">
@@ -157,85 +167,96 @@
                   <h2>Denial Reason</h2>
                   <form method="POST" action="{% url 'advisor_deny' %}">
                     {% csrf_token %}
-                    <input type="hidden" name="advisor_id" value="{{ advisor.Advisor_ID }}">
-                    <input type="hidden" name="student_id" value="{{ student.ID }}">
-                    <textarea name="denial_reason" rows="4" cols="50" placeholder="Enter reason for denial"></textarea>
-                    <br>
+                    <input
+                      type="hidden"
+                      name="advisor_id"
+                      value="{{ advisor.Advisor_ID }}"
+                    />
+                    <input
+                      type="hidden"
+                      name="student_id"
+                      value="{{ student.ID }}"
+                    />
+                    <textarea
+                      name="denial_reason"
+                      rows="4"
+                      cols="50"
+                      placeholder="Enter reason for denial"
+                    ></textarea>
+                    <br />
                     <button type="submit" class="deny-button">Submit</button>
                   </form>
                 </div>
               </div>
             </td>
           </tr>
-        {%endfor%}
-      </tbody>
-    </table>
-    
-    <h2>Students Yet to Submit Documents</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Student Name</th>
-          <th>Roll Number</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for student in student_no_doc%}
-        <tr>
+          {%endfor%}
+        </tbody>
+      </table>
+
+      <h2>Students Yet to Submit Documents</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Student Name</th>
+            <th>Roll Number</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for student in student_no_doc%}
+          <tr>
             <td>{{student.Name}}</td>
             <td>{{student.RollNumber}}</td>
           </tr>
-        {%endfor%}
-      </tbody>
-    </table>
+          {%endfor%}
+        </tbody>
+      </table>
 
-    <h2>Students Approved</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Student Name</th>
-          <th>Roll Number</th>
-          <th>PDF Uploaded</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for student in student_approved%}
-        <tr>
+      <h2>Students Approved</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Student Name</th>
+            <th>Roll Number</th>
+            <th>PDF Uploaded</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for student in student_approved%}
+          <tr>
             <td>{{student.Name}}</td>
             <td>{{student.ID}}</td>
             <td><a href="{{student.Document}}">View</a></td>
           </tr>
-        {%endfor%}
-      </tbody>
-    </table>
+          {%endfor%}
+        </tbody>
+      </table>
+    </div>
 
-  </div>
+    <script>
+      var modals = document.querySelectorAll(".modal");
+      var denyButtons = document.querySelectorAll(".deny-button");
+      var btnsClose = document.querySelectorAll(".close");
 
-  
-  <script>
-    var modals = document.querySelectorAll('.modal');
-    var denyButtons = document.querySelectorAll('.deny-button');
-    var btnsClose = document.querySelectorAll('.close');
-
-    denyButtons.forEach(function(denyButton, index) {
-      denyButton.onclick = function() {
-        modals[index].style.display = "block";
-      }
-    });
-
-    btnsClose.forEach(function(btnClose) {
-      btnClose.onclick = function() {
-        this.parentNode.parentNode.style.display = "none";
-      }
-    });
-
-    window.onclick = function(event) {
-      modals.forEach(function(modal) {
-        if (event.target == modal) {
-          modal.style.display = "none";
-        }
+      denyButtons.forEach(function (denyButton, index) {
+        denyButton.onclick = function () {
+          modals[index].style.display = "block";
+        };
       });
-    }
-  </script>
-</body>
+
+      btnsClose.forEach(function (btnClose) {
+        btnClose.onclick = function () {
+          this.parentNode.parentNode.style.display = "none";
+        };
+      });
+
+      window.onclick = function (event) {
+        modals.forEach(function (modal) {
+          if (event.target == modal) {
+            modal.style.display = "none";
+          }
+        });
+      };
+    </script>
+  </body>
 </html>
