@@ -50,10 +50,10 @@ def StudentStatus(user_id):
             query = f"SELECT status FROM Verification WHERE student_ID = '{user_id}' AND semester = '{CurrentSem()}';"
             cursor.execute(query)
             result = cursor.fetchone()
-            if result:
+            if result[0] == 'Approved':
                 return result[0]
             else:
-                return "File Submitted, " + result[0] + "by Admin"
+                return "File Submitted, " + result[0] + " by Admin"
         else:
             return "File Submitted, " + result[0] + " by Faculty Advisor"
     else:
