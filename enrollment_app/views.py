@@ -99,6 +99,11 @@ def LoadAdvisorData(user_id):
     student_adv_query = f"SELECT DISTINCT S.name, S.student_id FROM Student S, document D WHERE S.advisor_id = '{user_id}' AND S.student_id NOT IN (SELECT D.student_ID FROM Document D WHERE D.semester = '{CurrentSem()}' AND D.advisor_ID = '{user_id}');"
     cursor.execute(student_adv_query)
     studentDoc_data = cursor.fetchall()
+    if not studentDoc_data:
+        student_adv_query = f"SELECT name, student_id from Student WHERE advisor_id = '{user_id}';"
+        cursor.execute(student_adv_query)
+        studentDoc_data = cursor.fetchall()
+
     student_no_doc = []
                     
     for data in studentDoc_data:
@@ -160,6 +165,10 @@ def LoadAdminData(user_id):
     student_adm_query = f"SELECT DISTINCT S.name, S.student_id FROM Student S, document D WHERE S.admin_id = '{user_id}' AND S.student_id NOT IN (SELECT D.student_ID FROM Document D WHERE D.semester = '{CurrentSem()}' AND D.admin_ID = '{user_id}');"
     cursor.execute(student_adm_query)
     studentDoc_data = cursor.fetchall()
+    if not studentDoc_data:
+        student_adm_query = f"SELECT name, student_id from Student WHERE admin_id = '{user_id}';"
+        cursor.execute(student_adm_query)
+        studentDoc_data = cursor.fetchall()
     student_no_doc = []
                     
     for data in studentDoc_data:
