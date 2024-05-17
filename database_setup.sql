@@ -35,7 +35,7 @@ CREATE TABLE admin (
 
 CREATE TABLE document (
     Document_ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    document BLOB,
+    document MEDIUMBLOB,
     status VARCHAR(100),
     semester VARCHAR(100),
     Comments VARCHAR(200),

@@ -132,42 +132,22 @@
         </tr>
       </thead>
       <tbody>
-        {% for student in student_adv_approved%}
+        {% for student in student_adv_approved %}
         <tr>
-            <td>{{student.Name}}</td>
-            <td>{{student.ID}}</td>
-            <td><a href="{{student.Document}}">View</a></td>
+            <td>{{ student.Name }}</td>
+            <td>{{ student.ID }}</td>
+            <td><a href="{{ student.Document }}">View</a></td>
             <td class="action-buttons">
                 <form method="POST" action="{% url 'admin_approve' %}" style="display: inline;">
                     {% csrf_token %}
-                    <input type="hidden"  name="admin_id" value="{{ admin.Admin_ID }}">
-                    <input type="hidden"  name="student_id" value="{{ student.ID }}">
+                    <input type="hidden" name="admin_id" value="{{ admin.Admin_ID }}">
+                    <input type="hidden" name="student_id" value="{{ student.ID }}">
                     <button type="submit" class="approve-button">Approve</button>
                 </form>
-                
-                  <button type="submit" class="deny-button">Deny</button>
-                
-                <td>
-                  <td>
-                    <div id="myModal_{{ student.ID }}" class="modal">
-                      <div class="modal-content">
-                        <span class="close">&times;</span>
-                        <h2>Denial Reason</h2>
-                        <form method="POST" action="{% url 'admin_deny' %}">
-                          {% csrf_token %}
-                          <input type="hidden" name="admin_id" value="{{ admin.Admin_ID }}">
-                          <input type="hidden" name="student_id" value="{{ student.ID }}">
-                          <textarea name="denial_reason" rows="4" cols="50" placeholder="Enter reason for denial"></textarea>
-                          <br>
-                          <button type="submit" class="deny-button">Submit</button>
-                        </form>
-                      </div>
-                    </div>
-                  </td>
-                </td>
+                <button type="button" class="deny-button" data-student-id="{{ student.ID }}">Deny</button>
             </td>
-          </tr>
-        {%endfor%}
+        </tr>
+        {% endfor %}
       </tbody>
     </table>
 
@@ -180,12 +160,12 @@
         </tr>
       </thead>
       <tbody>
-        {% for student in student_no_doc%}
+        {% for student in student_no_doc %}
         <tr>
-            <td>{{student.Name}}</td>
-            <td>{{student.RollNumber}}</td>
-          </tr>
-        {%endfor%}
+            <td>{{ student.Name }}</td>
+            <td>{{ student.RollNumber }}</td>
+        </tr>
+        {% endfor %}
         
       </tbody>
     </table>
@@ -199,12 +179,12 @@
         </tr>
       </thead>
       <tbody>
-        {% for student in student_adv_noApprove%}
+        {% for student in student_adv_noApprove %}
         <tr>
-            <td>{{student.Name}}</td>
-            <td>{{student.RollNumber}}</td>
-          </tr>
-        {%endfor%}
+            <td>{{ student.Name }}</td>
+            <td>{{ student.RollNumber }}</td>
+        </tr>
+        {% endfor %}
         
       </tbody>
     </table>
@@ -219,41 +199,60 @@
         </tr>
       </thead>
       <tbody>
-        {% for student in student_approved%}
+        {% for student in student_approved %}
         <tr>
-            <td>{{student.Name}}</td>
-            <td>{{student.ID}}</td>
-            <td><a href="{{student.Document}}">View</a></td>
-          </tr>
-        {%endfor%}
+            <td>{{ student.Name }}</td>
+            <td>{{ student.ID }}</td>
+            <td><a href="{{ student.Document }}">View</a></td>
+        </tr>
+        {% endfor %}
       </tbody>
     </table>
+
+    <!-- Modal Template -->
+    <div id="modal-template" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Denial Reason</h2>
+        <form method="POST" action="{% url 'admin_deny' %}">
+          {% csrf_token %}
+          <input type="hidden" name="admin_id" value="{{ admin.Admin_ID }}">
+          <input type="hidden" name="student_id" class="student-id-input">
+          <textarea name="denial_reason" rows="4" cols="50" placeholder="Enter reason for denial"></textarea>
+          <br>
+          <button type="submit" class="deny-button">Submit</button>
+        </form>
+      </div>
+    </div>
+
   </div>
 
   <script>
-    var modals = document.querySelectorAll('.modal');
+    var modalTemplate = document.getElementById('modal-template');
+    var modals = {};
+
     var denyButtons = document.querySelectorAll('.deny-button');
-    var btnsClose = document.querySelectorAll('.close');
-
-    denyButtons.forEach(function(denyButton, index) {
+    denyButtons.forEach(function(denyButton) {
       denyButton.onclick = function() {
-        modals[index].style.display = "block";
-      }
-    });
-
-    btnsClose.forEach(function(btnClose) {
-      btnClose.onclick = function() {
-        this.parentNode.parentNode.style.display = "none";
-      }
-    });
-
-    window.onclick = function(event) {
-      modals.forEach(function(modal) {
-        if (event.target == modal) {
-          modal.style.display = "none";
+        var studentId = this.getAttribute('data-student-id');
+        if (!modals[studentId]) {
+          var modalClone = modalTemplate.cloneNode(true);
+          modalClone.id = 'modal-' + studentId;
+          modalClone.querySelector('.student-id-input').value = studentId;
+          document.body.appendChild(modalClone);
+          modalClone.querySelector('.close').onclick = function() {
+            modalClone.style.display = 'none';
+          };
+          window.onclick = function(event) {
+            if (event.target == modalClone) {
+              modalClone.style.display = 'none';
+            }
+          };
+          modals[studentId] = modalClone;
         }
-      });
-    }
+        modals[studentId].style.display = 'block';
+      };
+    });
   </script>
 </body>
 </html>
