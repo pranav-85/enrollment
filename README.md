@@ -9,25 +9,21 @@ This is a web-based application designed to streamline the submission and approv
 - **Approval Workflow:** Faculty advisors and administrators can review submitted documents, provide feedback, and either approve or reject them.
 - **Notifications:** Automated email notifications to inform students about the status of their submissions (pending, approved, rejected).
 - **Document History:** Maintain a record of all submitted documents and their approval statuses for future reference.
-- **Admin Dashboard:** Administrative interface to manage users, view submission analytics, and generate reports.
 
 ## Technologies Used
-- **Frontend:** HTML, CSS, JavaScript (Bootstrap for UI)
+- **Frontend:** HTML, CSS, JavaScript 
 - **Backend:** Python (Django framework)
-- **Database:** PostgreSQL
-- **Deployment:** Docker, AWS (Amazon Web Services) for hosting
+- **Database:** MySQL
 
 ## Usage
 1. **Student Submission:**
-   - Register or log in to EnrollMe.
+   - Log in to website.
    - Upload enrollment documents required for processing (e.g., course registration forms, add/drop requests).
 
 2. **Faculty Advisor Review:**
-   - Faculty advisors receive notifications of new submissions.
    - Review and provide feedback on student documents.
    - Approve or reject documents based on completeness and correctness.
 
 3. **Administrator Approval:**
    - Administrators oversee the entire approval process.
-   - Monitor submissions and intervene if necessary.
-   - Generate reports on submission trends and approval metrics.
+   - Monitor submissions.
