@@ -1,4 +1,4 @@
-#Semester Enrollment Document Submission System
+# Semester Enrollment Document Submission System
 
 ## Introduction
 This is a web-based application designed to streamline the submission and approval process for enrollment documents within educational institutions. It provides a centralized platform for students to submit their enrollment documents and for faculty advisors and administrators to review, approve, or reject these submissions online.
